@@ -31,16 +31,16 @@ class TestInterpolation(unittest.TestCase):
         cls.files = sorted(glob(f"{cls.pth}values_equal_*.tif"))
         print(cls.files)
 
-    @classmethod
-    def tearDownClass(cls):
-        # Clean up temporary directory
-        cls.tmp_dir.cleanup()
+    # @classmethod
+    # def tearDownClass(cls):
+    #     # Clean up temporary directory
+    #     cls.tmp_dir.cleanup()
 
     def test_linear_interpolation(self):
         with self.tmp_dir as tmp:
             if not os.path.exists(tmp):
                 os.mkdir(tmp)
-            out_path = Path(tmp) / "test.tif"
+            out_path = Path(tmp) / "test" 
             with gw.series(self.files, transfer_lib="jax") as src:
                 src.apply(
                     func=interpolate_nan(
@@ -48,10 +48,13 @@ class TestInterpolation(unittest.TestCase):
                         missing_value=np.nan,
                         count=len(src.filenames),
                     ),
-                    outfile=out_path,
+                    outfile="temp.tif",
                     bands=1,
                 )
-            with gw.open(out_path) as dst:
+            files = sorted(glob(f"{out_path}/*.tif"))
+            loc = sorted(glob(f"./*.tif"))
+            with gw.open(loc) as dst:
+                print(dst.shape)
                 self.assertEqual(dst.gw.nbands, 5)
                 self.assertEqual(dst.shape, (5, 1613, 2313))
                 # assert all of band 1 are equal to 1 NOTE EDGE CASE NOT HANDLED

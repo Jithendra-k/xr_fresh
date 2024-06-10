@@ -8,13 +8,13 @@ import unittest
 import geowombat as gw
 from pathlib import Path
 import unittest
-from xr_fresh.feature_calculator_series import abs_energy, maximum, _get_jax_backend
+from xr_fresh.feature_calculator_series import abs_energy, maximum
 import jax
 
 # %% check for cpu or gpu
 # Set JAX to use the determined backend
-jax_backend = _get_jax_backend()
-jax.config.update("jax_platform_name", jax_backend)
+# jax_backend = _get_jax_backend()
+# jax.config.update("jax_platform_name", jax_backend)
 
 
 # set change directory to location of this file
@@ -34,6 +34,7 @@ class TestSeries(unittest.TestCase):
             if not os.path.exists(tmp):
                 os.mkdir(tmp)
             out_path = Path(tmp) / "test.tif"
+            print(out_path)
             # use rasterio to create a new file tif file
 
             with gw.series(files) as src:

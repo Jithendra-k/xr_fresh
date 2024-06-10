@@ -273,15 +273,23 @@ def _count_longest_consecutive(values):
     return max_count
 
 
+def longest_true_run(arr):
+    max_run = 0
+    current_run = 0
+    for value in arr:
+        if value:
+            current_run += 1
+            max_run = jnp.nanmax(jnp.array([max_run, current_run]))
+        else:
+            current_run = 0
+    return max_run
+
 # try importing rle
 try:
-    from xr_fresh import rle
-
+    import rle
     longest_true_run = rle.longest_true_run
-except ImportWarning:
-    print("C++ rle not found, using slow version")
-    longest_true_run = _count_longest_consecutive
-
+except ImportError:
+    print("C++ rle module not found, using Python version")
 
 class longest_strike_above_mean(gw.TimeModule):
     """
